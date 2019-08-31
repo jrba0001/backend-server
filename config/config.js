@@ -1,0 +1,1 @@
+module.exports.SEED = '@estesss@unseed_jodido';
