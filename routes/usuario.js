@@ -14,6 +14,9 @@ var Usuario = require('../models/usuario');
 
 // obtener todos los usuarios
 app.get('/', mdAutenticacion.verificaToken, (req, res, next) => {
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
     Usuario.find({}, 'nombre email img role',
         (err, usuarios) => {
             if (err) {
@@ -23,11 +26,16 @@ app.get('/', mdAutenticacion.verificaToken, (req, res, next) => {
                     errors: err
                 });
             }
-            res.status(200).json({
-                ok: true,
-                usuarios: usuarios
+
+
+            Usuario.count({}, (err, conteo) => {
+                res.status(200).json({
+                    ok: true,
+                    usuarios: usuarios,
+                    total: conteo
+                });
             });
-        });
+        }).limit(5).skip(desde);
 });
 
 
